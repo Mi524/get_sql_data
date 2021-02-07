@@ -1,0 +1,27 @@
+select  date_format(b.enddate,'%Y年%c月') 月份, 
+		a._id, 
+        b.model_id,
+        b.source_content_id,
+        b.website_id,
+        b.brand 品牌,
+        b.series 系列, 
+        b.model 机型,  
+        b.launch_date 上市日期, 
+        b.comment_time 评论时间,
+        b.fault_type_report 故障类别,
+        b.fault_phen 故障现象, 
+        a.title 主题,
+        a.main_body 发帖内容
+from ecommerce_data_original_posts a 
+inner join (
+			select _id,comment_time, brand,series,model,launch_date,fault_type_report,fault_phen,
+			enddate, 
+			func_market_month(launch_date,comment_time) market_month,
+		                model_id, source_content_id, website_id
+			from ecommerce_data  
+			where 1 = 1 
+			 and enddate between '20200401' and '20200731'
+	) b 
+on a._id = b._id 
+where 1= 1 
+order by b.brand,b.series,b.model,b.comment_time  ; 
